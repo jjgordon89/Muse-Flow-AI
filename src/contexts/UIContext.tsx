@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useReducer, useCallback } from 'react';
+import React, { createContext, useReducer, useCallback } from 'react';
 
 interface UIState {
   sidebar: {
@@ -51,7 +51,7 @@ interface UIContextValue {
   };
 }
 
-const UIContext = createContext<UIContextValue | undefined>(undefined);
+export const UIContext = createContext<UIContextValue | undefined>(undefined);
 
 const initialState: UIState = {
   sidebar: {
@@ -126,9 +126,7 @@ function uiReducer(state: UIState, action: UIAction): UIState {
       return {
         ...state,
         theme: action.payload
-      };
-
-    case 'ADD_NOTIFICATION':
+      };    case 'ADD_NOTIFICATION': {
       const newNotification = {
         ...action.payload,
         id: `notification-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
@@ -138,6 +136,7 @@ function uiReducer(state: UIState, action: UIAction): UIState {
         ...state,
         notifications: [...state.notifications, newNotification]
       };
+    }
 
     case 'REMOVE_NOTIFICATION':
       return {
@@ -236,10 +235,3 @@ export function UIProvider({ children }: { children: React.ReactNode }) {
   );
 }
 
-export function useUI() {
-  const context = useContext(UIContext);
-  if (context === undefined) {
-    throw new Error('useUI must be used within a UIProvider');
-  }
-  return context;
-}

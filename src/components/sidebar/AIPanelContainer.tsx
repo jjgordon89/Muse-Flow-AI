@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { AIPanel } from './AIPanelOptimized';
-import { useAI, useUI } from '../../contexts';
+import { useAI, useUI } from '../../contexts/hooks';
 
 export function AIPanelContainer() {
   const { state: aiState, actions: aiActions } = useAI();

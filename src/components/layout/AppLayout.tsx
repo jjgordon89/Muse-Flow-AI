@@ -4,7 +4,7 @@ import { SidebarContainer } from './SidebarContainer';
 import { MainContent } from './MainContent';
 import { ModalManager } from './ModalManager';
 import { NotificationManager } from './NotificationManager';
-import { useUI } from '../../contexts';
+import { useUI } from '../../contexts/hooks';
 import { EnhancedErrorBoundary } from '../common/EnhancedErrorBoundary';
 
 export function AppLayout() {

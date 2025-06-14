@@ -1,7 +1,7 @@
 import React from 'react';
 import { Sidebar } from './Sidebar';
 import { SidebarContent } from './SidebarContent';
-import { useUI } from '../../contexts';
+import { useUI } from '../../contexts/hooks';
 
 export function SidebarContainer() {
   const { state: uiState, actions: uiActions } = useUI();

@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useReducer, useCallback, useEffect } from 'react';
+import React, { createContext, useReducer, useCallback, useEffect } from 'react';
 import { useEnhancedSecureAIService } from '../hooks/useEnhancedSecureAIService';
 import { SecureAISettings } from '../services/enhancedAIProviders';
 import { useAsyncErrorHandler } from '../hooks/useAsyncErrorHandler';
@@ -55,7 +55,7 @@ interface AIContextValue {
   };
 }
 
-const AIContext = createContext<AIContextValue | undefined>(undefined);
+export const AIContext = createContext<AIContextValue | undefined>(undefined);
 
 function aiReducer(state: AIState, action: AIAction): AIState {
   switch (action.type) {
@@ -69,11 +69,10 @@ function aiReducer(state: AIState, action: AIAction): AIState {
       return { ...state, isGenerating: action.payload };
 
     case 'SET_CURRENT_GENERATION':
-      return { ...state, currentGeneration: action.payload };
-
-    case 'ADD_TO_HISTORY':
+      return { ...state, currentGeneration: action.payload };    case 'ADD_TO_HISTORY': {
       const newHistory = [action.payload, ...state.generationHistory.slice(0, 49)]; // Keep last 50
       return { ...state, generationHistory: newHistory };
+    }
 
     case 'CLEAR_HISTORY':
       return { ...state, generationHistory: [] };
@@ -186,8 +185,7 @@ export function AIProvider({ children }: { children: React.ReactNode }) {
         const metrics = aiService.getServiceMetrics();
         dispatch({ type: 'UPDATE_METRICS', payload: metrics });
       } catch (error) {
-        reportError(error, { action: 'refresh-metrics' });
-      }
+        reportError(error, { action: 'refresh-metrics' });      }
     }, [aiService, reportError])
   };
 
@@ -196,12 +194,4 @@ export function AIProvider({ children }: { children: React.ReactNode }) {
       {children}
     </AIContext.Provider>
   );
-}
-
-export function useAI() {
-  const context = useContext(AIContext);
-  if (context === undefined) {
-    throw new Error('useAI must be used within an AIProvider');
-  }
-  return context;
 }

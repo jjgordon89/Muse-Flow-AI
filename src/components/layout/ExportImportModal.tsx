@@ -1,6 +1,6 @@
 import React from 'react';
 import { ExportImportPanel } from './ExportImportPanel';
-import { useProject } from '../../contexts';
+import { useProject } from '../../contexts/hooks';
 
 interface ExportImportModalProps {
   onClose: () => void;

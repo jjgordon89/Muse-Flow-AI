@@ -1,6 +1,6 @@
 import React from 'react';
 import { SettingsPanel } from '../sidebar/SettingsPanel';
-import { useAI } from '../../contexts';
+import { useAI } from '../../contexts/hooks';
 
 interface SettingsModalProps {
   onClose: () => void;

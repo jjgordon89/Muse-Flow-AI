@@ -1,7 +1,7 @@
 import React from 'react';
 import { SettingsModal } from './SettingsModal';
 import { ExportImportModal } from './ExportImportModal';
-import { useUI } from '../../contexts';
+import { useUI } from '../../contexts/hooks';
 import { EnhancedErrorBoundary } from '../common/EnhancedErrorBoundary';
 
 export function ModalManager() {

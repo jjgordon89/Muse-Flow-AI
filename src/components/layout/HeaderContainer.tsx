@@ -1,6 +1,6 @@
 import React from 'react';
 import { Header } from './Header';
-import { useProject, useUI } from '../../contexts';
+import { useProject, useUI } from '../../contexts/hooks';
 import { useAsyncErrorHandler } from '../../hooks/useAsyncErrorHandler';
 
 export function HeaderContainer() {

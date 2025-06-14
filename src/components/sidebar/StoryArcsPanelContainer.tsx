@@ -1,6 +1,6 @@
 import React from 'react';
 import { StoryArcsPanel } from './StoryArcsPanel';
-import { useProject } from '../../contexts';
+import { useProject } from '../../contexts/hooks';
 
 export function StoryArcsPanelContainer() {
   const { state: projectState, actions: projectActions } = useProject();

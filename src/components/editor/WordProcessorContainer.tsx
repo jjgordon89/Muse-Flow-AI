@@ -1,6 +1,6 @@
 import React from 'react';
 import { WordProcessor } from './WordProcessor';
-import { useProject } from '../../contexts';
+import { useProject } from '../../contexts/hooks';
 import { useWordCount } from '../../hooks/useWordCount';
 
 export function WordProcessorContainer() {

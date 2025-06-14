@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useReducer, useCallback, useEffect } from 'react';
+import React, { createContext, useReducer, useCallback, useEffect } from 'react';
 import { Project, Character, StoryArc } from '../types';
 import { useLocalStorage } from '../hooks/useLocalStorage';
 import { useAsyncErrorHandler } from '../hooks/useAsyncErrorHandler';
@@ -41,7 +41,7 @@ interface ProjectContextValue {
   };
 }
 
-const ProjectContext = createContext<ProjectContextValue | undefined>(undefined);
+export const ProjectContext = createContext<ProjectContextValue | undefined>(undefined);
 
 const createDefaultProject = (): Project => ({
   id: Date.now().toString(),
@@ -227,8 +227,7 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
     lastSaved: null,
     isDirty: false
   });
-
-  const { reportError, wrapAsync } = useAsyncErrorHandler({ 
+  const { wrapAsync } = useAsyncErrorHandler({ 
     component: 'ProjectProvider' 
   });
 
@@ -303,10 +302,3 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
   );
 }
 
-export function useProject() {
-  const context = useContext(ProjectContext);
-  if (context === undefined) {
-    throw new Error('useProject must be used within a ProjectProvider');
-  }
-  return context;
-}

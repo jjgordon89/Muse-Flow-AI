@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { CheckCircle, AlertTriangle, AlertCircle, Info, X } from 'lucide-react';
-import { useUI } from '../../contexts';
+import { useUI } from '../../contexts/hooks';
 
 const iconMap = {
   success: CheckCircle,

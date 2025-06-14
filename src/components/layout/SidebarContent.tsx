@@ -4,9 +4,9 @@ import { CharactersPanelContainer } from '../sidebar/CharactersPanelContainer';
 import { StoryArcsPanelContainer } from '../sidebar/StoryArcsPanelContainer';
 import { WorldBuildingPanel } from '../sidebar/WorldBuildingPanel';
 import { CrossReferencesPanel } from '../sidebar/CrossReferencesPanel';
-import { AIPanelContainer } from '../sidebar/AIPanelContainer';
+import { EnhancedAIContainer } from '../sidebar/EnhancedAIContainer';
 import { PromptsPanel } from '../sidebar/PromptsPanel';
-import { useProject, useUI } from '../../contexts';
+import { useProject, useUI } from '../../contexts/hooks';
 import { EnhancedErrorBoundary } from '../common/EnhancedErrorBoundary';
 
 interface SidebarContentProps {
@@ -56,11 +56,10 @@ export function SidebarContent({ activeTab }: SidebarContentProps) {
             <CrossReferencesPanel project={projectState.currentProject} />
           </EnhancedErrorBoundary>
         );
-      
-      case 'ai':
+        case 'ai':
         return (
           <EnhancedErrorBoundary level="panel" component="AIPanel">
-            <AIPanelContainer />
+            <EnhancedAIContainer />
           </EnhancedErrorBoundary>
         );
       
