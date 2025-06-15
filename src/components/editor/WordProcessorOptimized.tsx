@@ -1,7 +1,6 @@
-import React, { useCallback, useRef, useEffect, useMemo } from 'react';
+import React, { useCallback, useRef, useEffect, memo, useMemo } from 'react';
 import TextareaAutosize from 'react-textarea-autosize';
 import { useWordCount } from '../../hooks/useWordCount';
-import { ErrorBoundary } from '../common/ErrorBoundary';
 
 interface WordProcessorProps {
   content: string;
@@ -10,12 +9,15 @@ interface WordProcessorProps {
   targetWordCount?: number;
 }
 
-// Memoized word count display component
-const WordCountDisplay = React.memo<{
-  wordCount: number;
-  targetWordCount: number;
-  progress: number;
-}>(({ wordCount, targetWordCount, progress }) => (
+const WordCountDisplay = memo(({ 
+  wordCount, 
+  targetWordCount, 
+  progress 
+}: { 
+  wordCount: number; 
+  targetWordCount: number; 
+  progress: number; 
+}) => (
   <div className="flex items-center space-x-4">
     <span className="text-sm font-medium text-gray-700">
       {wordCount.toLocaleString()} words
@@ -38,21 +40,32 @@ const WordCountDisplay = React.memo<{
 
 WordCountDisplay.displayName = 'WordCountDisplay';
 
-export const WordProcessor = React.memo<WordProcessorProps>(({ 
+const DateDisplay = memo(() => {
+  const currentDate = useMemo(() => new Date().toLocaleDateString(), []);
+  
+  return (
+    <div className="text-xs text-gray-500">
+      {currentDate}
+    </div>
+  );
+});
+
+DateDisplay.displayName = 'DateDisplay';
+
+export const WordProcessorOptimized = memo(({ 
   content, 
   onChange, 
   placeholder = "Begin your story...",
   targetWordCount = 50000
-}) => {
+}: WordProcessorProps) => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const wordCount = useWordCount(content);
   
-  // Memoize progress calculation
-  const progress = useMemo(() => {
-    return targetWordCount > 0 ? (wordCount / targetWordCount) * 100 : 0;
-  }, [wordCount, targetWordCount]);
+  const progress = useMemo(() => 
+    targetWordCount > 0 ? (wordCount / targetWordCount) * 100 : 0,
+    [wordCount, targetWordCount]
+  );
 
-  // Debounced change handler to reduce re-renders
   const handleChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
     onChange(e.target.value);
   }, [onChange]);
@@ -64,44 +77,40 @@ export const WordProcessor = React.memo<WordProcessorProps>(({
     }
   }, []);
 
-  return (
-    <ErrorBoundary level="component">
-      <div className="h-full flex flex-col bg-white">
-        {/* Word count bar */}
-        <div className="flex-shrink-0 px-6 py-3 bg-gray-50 border-b border-gray-200">
-          <div className="flex items-center justify-between">
-            <WordCountDisplay
-              wordCount={wordCount}
-              targetWordCount={targetWordCount}
-              progress={progress}
-            />
-            <div className="text-xs text-gray-500">
-              {new Date().toLocaleDateString()}
-            </div>
-          </div>
-        </div>
+  const textareaStyle = useMemo(() => ({
+    lineHeight: '1.8',
+    fontFamily: 'Georgia, "Times New Roman", serif'
+  }), []);
 
-        {/* Main editor */}
-        <div className="flex-1 p-6 overflow-auto">
-          <div className="max-w-4xl mx-auto">
-            <ErrorBoundary level="component">
-              <TextareaAutosize
-                ref={textareaRef}
-                value={content}
-                onChange={handleChange}
-                placeholder={placeholder}
-                className="w-full min-h-[calc(100vh-200px)] p-0 text-lg leading-relaxed text-gray-900 placeholder-gray-400 border-none outline-none resize-none font-serif"
-                style={{ 
-                  lineHeight: '1.8',
-                  fontFamily: 'Georgia, "Times New Roman", serif'
-                }}
-              />
-            </ErrorBoundary>
-          </div>
+  return (
+    <div className="h-full flex flex-col bg-white">
+      {/* Word count bar */}
+      <div className="flex-shrink-0 px-6 py-3 bg-gray-50 border-b border-gray-200">
+        <div className="flex items-center justify-between">
+          <WordCountDisplay 
+            wordCount={wordCount}
+            targetWordCount={targetWordCount}
+            progress={progress}
+          />
+          <DateDisplay />
         </div>
       </div>
-    </ErrorBoundary>
+
+      {/* Main editor */}
+      <div className="flex-1 p-6 overflow-auto">
+        <div className="max-w-4xl mx-auto">
+          <TextareaAutosize
+            ref={textareaRef}
+            value={content}
+            onChange={handleChange}
+            placeholder={placeholder}
+            className="w-full min-h-[calc(100vh-200px)] p-0 text-lg leading-relaxed text-gray-900 placeholder-gray-400 border-none outline-none resize-none font-serif"
+            style={textareaStyle}
+          />
+        </div>
+      </div>
+    </div>
   );
 });
 
-WordProcessor.displayName = 'WordProcessor';
+WordProcessorOptimized.displayName = 'WordProcessorOptimized';

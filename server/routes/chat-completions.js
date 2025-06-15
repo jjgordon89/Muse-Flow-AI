@@ -2,6 +2,24 @@ import express from 'express';
 import { validateChatCompletionRequest } from '../validators/request-validator.js';
 import { AIService } from '../services/ai-service.js';
 
+// Input sanitization
+function sanitizeInput(str) {
+  if (typeof str !== 'string') return str;
+  return str
+    .replace(/[<>]/g, '') // Remove potential HTML tags
+    .replace(/javascript:/gi, '') // Remove javascript: protocol
+    .replace(/data:/gi, '') // Remove data: protocol
+    .trim();
+}
+
+function sanitizeMessages(messages) {
+  return messages.map(msg => ({
+    ...msg,
+    content: sanitizeInput(msg.content),
+    role: msg.role // Keep role as-is but validate in validator
+  }));
+}
+
 const router = express.Router();
 
 /**
@@ -35,6 +53,30 @@ router.post('/completions', async (req, res, next) => {
       user
     } = req.body;
 
+    // Sanitize messages to prevent injection attacks
+    const sanitizedMessages = sanitizeMessages(messages);
+
+    // Validate parameters
+    if (temperature < 0 || temperature > 2) {
+      return res.status(400).json({
+        error: {
+          message: 'Temperature must be between 0 and 2',
+          type: 'invalid_request_error',
+          code: 'invalid_parameter'
+        }
+      });
+    }
+
+    if (max_tokens < 1 || max_tokens > 4096) {
+      return res.status(400).json({
+        error: {
+          message: 'max_tokens must be between 1 and 4096',
+          type: 'invalid_request_error',
+          code: 'invalid_parameter'
+        }
+      });
+    }
+
     // Check if streaming is requested (not implemented yet)
     if (stream) {
       return res.status(400).json({
@@ -50,7 +92,7 @@ router.post('/completions', async (req, res, next) => {
     const aiService = new AIService();
     const completion = await aiService.generateChatCompletion({
       model,
-      messages,
+      messages: sanitizedMessages,
       temperature,
       max_tokens,
       top_p,

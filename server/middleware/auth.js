@@ -59,14 +59,19 @@ function isValidApiKey(token) {
     /^dev-[a-zA-Z0-9]+$/, // Development format
   ];
 
-  // Allow specific test tokens
+  // Allow test tokens only from environment variables (not hardcoded)
   const testTokens = [
-    'test-token',
-    'dev-token',
-    process.env.API_TEST_TOKEN
+    process.env.API_TEST_TOKEN,
+    process.env.DEV_API_TOKEN
   ].filter(Boolean);
 
-  return validFormats.some(format => format.test(token)) || 
+  // In production, only allow properly formatted tokens
+  if (process.env.NODE_ENV === 'production') {
+    return validFormats.some(format => format.test(token));
+  }
+
+  // In development, allow test tokens from environment
+  return validFormats.some(format => format.test(token)) ||
          testTokens.includes(token);
 }
 

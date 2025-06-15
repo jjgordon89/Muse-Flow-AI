@@ -18,7 +18,20 @@ const PORT = process.env.API_PORT || 3001;
 
 // Security middleware
 app.use(helmet({
-  contentSecurityPolicy: false, // Disable CSP for API
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'"],
+      styleSrc: ["'self'", "'unsafe-inline'"], // Allow inline styles for API responses
+      imgSrc: ["'self'", "data:", "https:"],
+      connectSrc: ["'self'"],
+      fontSrc: ["'self'"],
+      objectSrc: ["'none'"],
+      mediaSrc: ["'self'"],
+      frameSrc: ["'none'"],
+    },
+  },
+  crossOriginEmbedderPolicy: false, // Disable for API compatibility
 }));
 
 // CORS configuration
