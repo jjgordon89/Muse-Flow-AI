@@ -2,7 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { EnhancedAIAssistant } from '../ai/EnhancedAIAssistant';
 import { ResponsiveAIInterface } from '../ai/ResponsiveAIInterface';
 import { StreamingAIChat } from '../ai/StreamingAIChat';
-import { AIPanel } from './AIPanelOptimized';
+import { AIPanelOptimized } from './AIPanelOptimized';
 import { useAI, useUI } from '../../contexts/hooks';
 
 // Simple icon components to replace lucide-react
@@ -120,7 +120,7 @@ export function EnhancedAIContainer() {
       case 'optimized':
       default:
         return (
-          <AIPanel
+          <AIPanelOptimized
             aiService={aiService}
             onShowSettings={handleShowSettings}
           />
